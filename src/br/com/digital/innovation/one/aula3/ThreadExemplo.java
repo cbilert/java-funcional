@@ -3,22 +3,38 @@ package br.com.digital.innovation.one.aula3;
 public class ThreadExemplo {
 
     public static void main(String[] args) {
-        BarraDeCarregamento2 barraDeCarregamento20 = new BarraDeCarregamento2();
-        BarraDeCarregamento2 barraDeCarregamento21 = new BarraDeCarregamento2();
-        BarraDeCarregamento2 barraDeCarregamento22 = new BarraDeCarregamento2();
-        barraDeCarregamento20.start();
-        barraDeCarregamento21.start();
-        barraDeCarregamento22.start();
+//        BarraDeCarregamento barraDeCarregamento = new BarraDeCarregamento();
+//        BarraDeCarregamento2 barraDeCarregamento2 = new BarraDeCarregamento2();
+//        BarraDeCarregamento3 barraDeCarregamento3 = new BarraDeCarregamento3();
+//        Thread t = new Thread(new BarraDeCarregamento3());
+//
+//        barraDeCarregamento.run();
+//        t.start();
+//        barraDeCarregamento2.start();
+//        barraDeCarregamento3.start();
+
+
+        GeradorPDF iniciarGeradorPDF = new GeradorPDF();
+        BarraDeCarregamento3 iniciarBarraCarregamento = new BarraDeCarregamento3(iniciarGeradorPDF);
+
+        iniciarGeradorPDF.start();
+        iniciarBarraCarregamento.start();
     }
 
 }
 
 
-class GerarPDF implements Runnable {
+class GeradorPDF extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Gera PDF");
+        try {
+            System.out.println("Iniciar geração do PDF...");
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("PDF Gerado.");
     }
 }
 
@@ -26,14 +42,47 @@ class BarraDeCarregamento implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Loading...");
+        try {
+            Thread.sleep(1000);
+            System.out.println("Loading...");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 
 class BarraDeCarregamento2 extends Thread {
     @Override
     public void run() {
-        super.run();
-        System.out.println("Rodei..."+this.getName());
+        try {
+            Thread.sleep(3000);
+            super.run();
+            System.out.println("Rodei BarraDeCarregamento2..." + this.getName());
+        }catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class BarraDeCarregamento3 extends Thread {
+    Thread thread;
+    public BarraDeCarregamento3(Thread thread) {
+        this.thread = thread;
+    }
+
+    @Override
+    public void run() {
+        try {
+            while(true) {
+                Thread.sleep(500);
+                if(!thread.isAlive()) {
+                    break;
+                }
+                System.out.println("Loading....");
+
+            }
+        }catch(InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
